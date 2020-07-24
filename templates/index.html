@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <title>Todo App</title>
+    </head>
+    <body>
+        <form  id="form" >
+            <label for="description"></label>
+            <input id="description" name="description" type="text">
+            <button type="submit" >
+                Submit
+            </button>
+        </form>
+        <ul id='todo-list'>
+            {% for d in data %}
+            <li>{{d.description}}</li>
+            {% endfor %}
+        </ul>
+        <script>
+            document.getElementById('form').onsubmit = (e) => {
+                e.preventDefault();
+                fetch('/todo/create', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        'description': document.getElementById('description').value,
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(res => {
+                    return res.json();
+                }).then(res => {
+                    console.log(res);
+                    const liItem = document.createElement('li');
+                    liItem.innerHTML = res['description'];
+                    document.getElementById('todo-list').appendChild(liItem);
+                }).catch (error => console.error(error))
+            }
+        </script>
+    </body>
+</html>
